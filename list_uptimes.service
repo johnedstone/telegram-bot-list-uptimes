@@ -1,0 +1,16 @@
+[Unit]
+Description=list_uptimes daemon
+After=network.target
+
+[Service]
+Type=simple
+User=admin
+Group=admin
+Restart=always
+
+ExecStart=<path-to>/.venv/bin/python <path-to>/list_uptimes.py
+
+[Install]
+WantedBy=multi-user.target
+
+# vim: ai et ts=4 sw=4 sts=4 nu
