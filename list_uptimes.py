@@ -38,6 +38,33 @@ def format_dict(result_dict):
     # max telegram len is 4096
     return results[:4096-128]
 
+def check_which_file(value=None):
+    if value:
+        value = f"""
+    file: {value}"""
+    else:
+        value = ""
+
+    return value
+
+def get_location_type(uptime, loc_type, loc_time):
+    if loc_type:
+        return f"""
+    loc_type/time: {loc_type}/{loc_time}"""
+
+    else:
+        if "location(gps)" in uptime:
+            return f"""
+    loc_type: gps"""
+
+        elif "location(tower)" in uptime:
+            return f"""
+    loc_type: tower"""
+
+        else:
+            return f"""
+    loc_type: probably gps"""
+
 def get_uptime_report():
     """query the REST API"""
     results = {}
@@ -49,7 +76,9 @@ def get_uptime_report():
                 results[ea['arduino_name']] = [] 
 
             results[ea['arduino_name']].insert(0, f"""created: {pz.sub('', ea["created_at"])}
-    {pz.sub('', p.sub('uptime: ', ea["uptime"]))}""")
+    {pz.sub('', p.sub('uptime: ', ea["uptime"]))[:41]} ...{check_which_file(ea["which_file"])}
+    {ea["latitude"]},{ea["longitude"]}
+    {ea["temperature"]}C, {ea["humidity"]}%RH{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}""")
 
     results = format_dict(results)
     results = results + f"""**Currently:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}"""
