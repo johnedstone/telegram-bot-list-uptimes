@@ -41,11 +41,17 @@ def format_dict(result_dict):
 def check_which_file(value=None):
     if value:
         value = f"""
-    file: {value}"""
+    {value}"""
     else:
         value = ""
 
     return value
+
+def check_voltage(value=None):
+    if value:
+        return f' / {float(value):.4f} volts'
+    else:
+        return ''
 
 def get_location_type(uptime, loc_type, loc_time):
     if loc_type:
@@ -76,7 +82,7 @@ def get_uptime_report():
                 results[ea['arduino_name']] = [] 
 
             results[ea['arduino_name']].insert(0, f"""created: {pz.sub('', ea["created_at"])}
-    {pz.sub('', p.sub('uptime: ', ea["uptime"]))[:41]} ...{check_which_file(ea["which_file"])}
+    {pz.sub('', p.sub('uptime: ', ea["uptime"]))[:30]}{check_which_file(ea["which_file"])}{check_voltage(ea["voltage"])}
     {ea["latitude"]},{ea["longitude"]}
     {ea["temperature"]}C, {ea["humidity"]}%RH{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}""")
 
