@@ -53,6 +53,19 @@ def check_voltage(value=None):
     else:
         return ''
 
+def check_uptime(value=None):
+    if 'days' in value:
+        ss = value.split()
+
+        return f'uptime: {ss[2]}'
+
+    ss = value.split("'")
+    for index, ea in enumerate(ss):
+        if ea == 'status':
+            return f'{ea}: {ss[index+2]}'
+
+    return ""
+
 def get_location_type(uptime, loc_type, loc_time):
     if loc_type:
         return f"""
@@ -82,7 +95,7 @@ def get_uptime_report():
                 results[ea['arduino_name']] = [] 
 
             results[ea['arduino_name']].insert(0, f"""created: {pz.sub('', ea["created_at"])}
-    {pz.sub('', p.sub('uptime: ', ea["uptime"]))[:30]}{check_which_file(ea["which_file"])}{check_voltage(ea["voltage"])}
+    {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))}{check_which_file(ea["which_file"])}{check_voltage(ea["voltage"])}
     {ea["latitude"]},{ea["longitude"]}
     {ea["temperature"]}C, {ea["humidity"]}%RH{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}""")
 
