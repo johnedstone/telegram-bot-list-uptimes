@@ -38,6 +38,12 @@ def format_dict(result_dict):
     # max telegram len is 4096
     return results[:4096-128]
 
+def fix_temp(value=None):
+    if not value:
+        return ''
+    else:
+        return f'{float(value):.1f}C/{(float(value)*9/5)+32:.0f}F'
+
 def check_which_file(value=None):
     if value:
         value = f"""
@@ -97,7 +103,7 @@ def get_uptime_report():
             results[ea['arduino_name']].insert(0, f"""created: {pz.sub('', ea["created_at"])}
     {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))}{check_which_file(ea["which_file"])}{check_voltage(ea["voltage"])}
     {ea["latitude"]},{ea["longitude"]}
-    {ea["temperature"]}C, {ea["humidity"]}%RH{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}""")
+    {fix_temp(ea["temperature"])}, {ea["humidity"]}%RH{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}""")
 
     results = format_dict(results)
     results = results + f"""**Currently:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}"""
