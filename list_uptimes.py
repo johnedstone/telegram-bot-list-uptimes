@@ -70,7 +70,10 @@ def check_uptime(value=None):
         if ea == 'status':
             return f'{ea}: {ss[index+2]}'
 
-    return ""
+    if len(ss) > 2:
+        return f'{ss[1]} {ss[2]}'
+    else:
+        return 'hm ...'
 
 def get_location_type(uptime, loc_type, loc_time):
     if loc_type:
