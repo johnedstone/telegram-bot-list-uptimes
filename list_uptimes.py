@@ -55,7 +55,7 @@ def check_which_file(value=None):
 
 def check_voltage(value=None):
     if value:
-        return f' / {float(value):.4f} volts'
+        return f'/{float(value):.2f}v'
     else:
         return ''
 
@@ -106,7 +106,7 @@ def get_uptime_report():
             results[ea['arduino_name']].insert(0, f"""created: {pz.sub('', ea["created_at"])}
     {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))}{check_which_file(ea["which_file"])}{check_voltage(ea["voltage"])}
     {ea["latitude"]},{ea["longitude"]}
-    {fix_temp(ea["temperature"])}, {ea["humidity"]}%RH{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}""")
+    {fix_temp(ea["temperature"])} {ea["humidity"]}%RH {ea["when_captured_by_device"]}{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}""")
 
     results = format_dict(results)
     results = results + f"""**Currently:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}"""
