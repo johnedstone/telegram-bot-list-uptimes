@@ -55,9 +55,9 @@ def check_which_file(value=None):
 
     return value
 
-def get_body_when(body_when):
-    if body_when:
-        return f"/pz_year.sub('', body_when)"
+def get_body_time(body_time):
+    if body_time:
+        return f"/pz_year.sub('', body_time)"
     else:
         return ''
 
@@ -126,7 +126,7 @@ def get_uptime_report():
             results[ea['arduino_name']].insert(0, f"""created: {pz_year.sub('', pz.sub('', ea["created_at"]))}
     {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))}{check_which_file(p_ext.sub('', ea["which_file"]))}{check_voltage(ea["voltage"])}
     {str(round(float(ea["latitude"]), 5))},{str(round(float(ea["longitude"]), 5))}
-    {fix_temp(ea["temperature"])} {ea["humidity"]}%H {pz_year.sub('', ea["when_captured_by_device"])}{get_body_when(ea["body_when"])}{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}
+    {fix_temp(ea["temperature"])} {ea["humidity"]}%H {pz_year.sub('', ea["when_captured_by_device"])}{get_body_time(ea["body_time"])}{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}
     tow: {ea["t_loc"]},{ea["t_country"]}/{get_t_when(ea["t_when"])}/{fix_coord(ea["t_lat"])},{fix_coord(ea["t_lon"])}""")
 
     results = format_dict(results)
