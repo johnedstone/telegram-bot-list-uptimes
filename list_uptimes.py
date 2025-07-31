@@ -16,6 +16,8 @@ bot, rest_api, params = start_bot('TOKEN_LIST_UPTIMES_BOT', logger_log, logger_e
 
 p = re.compile(r'Start time .unixtime . utc_datetime.: \d+ .')
 pz = re.compile(r'(.\d{6}Z|.\d{6}\+00:00)$')
+pz_year = re.compile(r'^\d{4}\-')
+p_ext = re.compile(r'\..*$')
 
 keyboard = [
     Button.inline('Post a report', b'5'),
@@ -53,6 +55,24 @@ def check_which_file(value=None):
 
     return value
 
+def get_body_when(body_when):
+    if body_when:
+        return pz_year.sub('', body_when)
+    else:
+        return
+
+def fix_coord(coord):
+    try:
+        return str(round(float(coord), 5))
+    except Exception as e:
+        return f'{e}'
+
+def get_t_when(t_when):
+    if t_when:
+        return pz_year.sub('', t_when)
+    else:
+        return ""
+
 def check_voltage(value=None):
     if value:
         return f'/{float(value):.2f}v'
@@ -78,20 +98,20 @@ def check_uptime(value=None):
 def get_location_type(uptime, loc_type, loc_time):
     if loc_type:
         return f"""
-    loc_type/time: {loc_type}/{loc_time}"""
+    best: {loc_type}/{pz_year.sub('', loc_time)}"""
 
     else:
         if "location(gps)" in uptime:
             return f"""
-    loc_type: gps"""
+    best: gps"""
 
         elif "location(tower)" in uptime:
             return f"""
-    loc_type: tower"""
+    best: tower"""
 
         else:
             return f"""
-    loc_type: probably gps"""
+    best: probably gps"""
 
 def get_uptime_report():
     """query the REST API"""
@@ -103,10 +123,11 @@ def get_uptime_report():
             if ea['arduino_name'] not in results:
                 results[ea['arduino_name']] = [] 
 
-            results[ea['arduino_name']].insert(0, f"""created: {pz.sub('', ea["created_at"])}
-    {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))}{check_which_file(ea["which_file"])}{check_voltage(ea["voltage"])}
-    {ea["latitude"]},{ea["longitude"]}
-    {fix_temp(ea["temperature"])} {ea["humidity"]}%RH {ea["when_captured_by_device"]}{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}""")
+            results[ea['arduino_name']].insert(0, f"""created: {pz_year.sub('', pz.sub('', ea["created_at"]))}
+    {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))}{check_which_file(p_ext.sub('', ea["which_file"]))}{check_voltage(ea["voltage"])}
+    {str(round(float(ea["latitude"]), 5))},{str(round(float(ea["longitude"]), 5))}
+    {fix_temp(ea["temperature"])} {ea["humidity"]}%H {pz_year.sub('', ea["when_captured_by_device"])}/{get_body_when(ea["body_when"])}{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}
+    tow: {ea["t_loc"]},{ea["t_country"]}/{get_t_when(ea["t_when"])}/{fix_coord(ea["t_lat"])},{fix_coord(ea["t_lon"])}""")
 
     results = format_dict(results)
     results = results + f"""**Currently:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}"""
