@@ -59,7 +59,7 @@ def get_body_when(body_when):
     if body_when:
         return pz_year.sub('', body_when)
     else:
-        return
+        return ''
 
 def fix_coord(coord):
     try:
