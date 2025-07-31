@@ -97,17 +97,14 @@ def check_uptime(value=None):
 
 def get_location_type(uptime, loc_type, loc_time):
     if loc_type:
-        return f"""
-    best: {loc_type}/{pz_year.sub('', loc_time)}"""
+        return f"""best: {loc_type}/{pz_year.sub('', loc_time)}"""
 
     else:
         if "location(gps)" in uptime:
-            return f"""
-    best: gps"""
+            return f"""best: gps"""
 
         elif "location(tower)" in uptime:
-            return f"""
-    best: tower"""
+            return f"""best: tower"""
 
         else:
             return f"""
@@ -125,8 +122,8 @@ def get_uptime_report():
 
             results[ea['arduino_name']].insert(0, f"""created: {pz_year.sub('', pz.sub('', ea["created_at"]))}
     {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))}{check_which_file(p_ext.sub('', ea["which_file"]))}{check_voltage(ea["voltage"])}
-    {str(round(float(ea["latitude"]), 5))},{str(round(float(ea["longitude"]), 5))}
-    {fix_temp(ea["temperature"])} {ea["humidity"]}%H {pz_year.sub('', ea["when_captured_by_device"])}{get_body_time(ea["body_time"])}{get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}
+    {get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}/{str(round(float(ea["latitude"]), 5))},{str(round(float(ea["longitude"]), 5))}
+    {fix_temp(ea["temperature"])} {ea["humidity"]}%H {pz_year.sub('', ea["when_captured_by_device"])}{get_body_time(ea["body_time"])}
     tow: {ea["t_loc"]},{ea["t_country"]}/{get_t_when(ea["t_when"])}/{fix_coord(ea["t_lat"])},{fix_coord(ea["t_lon"])}""")
 
     results = format_dict(results)
