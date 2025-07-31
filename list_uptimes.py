@@ -48,8 +48,7 @@ def fix_temp(value=None):
 
 def check_which_file(value=None):
     if value:
-        value = f"""
-    {value}"""
+        value = f"""{value}"""
     else:
         value = ""
 
@@ -125,9 +124,9 @@ def get_uptime_report():
                 results[ea['arduino_name']] = [] 
 
             results[ea['arduino_name']].insert(0, f"""created: {pz_year.sub('', pz.sub('', ea["created_at"]))}
-    {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))}{check_which_file(p_ext.sub('', ea["which_file"]))}{check_voltage(ea["voltage"])}
+    {pz.sub('', p.sub('uptime: ', check_uptime(ea["uptime"])))} {check_which_file(p_ext.sub('', ea["which_file"]))}{check_voltage(ea["voltage"])}
     {get_location_type(ea["uptime"], ea["best_location_type"], ea["best_location_when"])}/{str(round(float(ea["latitude"]), 5))},{str(round(float(ea["longitude"]), 5))}
-    {fix_temp(ea["temperature"])} {ea["humidity"]}%H {pz_year.sub('', ea["when_captured_by_device"])}
+    t/h: {fix_temp(ea["temperature"])} {ea["humidity"]}%H {pz_year.sub('', ea["when_captured_by_device"])}
     tow: {ea["t_loc"]},{ea["t_country"]}/{get_t_when(ea["t_when"])}/{fix_coord(ea["t_lat"])},{fix_coord(ea["t_lon"])}
     last_gps_fix: {get_body_time(ea["body_time"])}""")
 
