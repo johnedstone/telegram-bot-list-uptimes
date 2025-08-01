@@ -134,7 +134,8 @@ def get_uptime_report():
     last_gps_fix: {get_body_time(ea["body_time"])}""")
 
     results = format_dict(results)
-    results = results + f"""**Currently:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}"""
+    results = results + f"""**Currently:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}
+https://arcg.is/1yPOy50"""
 
     logger_log.debug(results)
     return f'{results}'
